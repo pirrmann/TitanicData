@@ -69,6 +69,18 @@ let [<Test>] ``An empty lazy list is empty`` () =
 //    seq { yield 1; yield 2 } |> convertAndBack |> shouldBeSameSequenceAs (seq { yield 1; yield 2 })
 //    seq { yield "a"; yield "b"; yield "c" } |> convertAndBack |> shouldBeSameSequenceAs (seq { yield "a"; yield "b"; yield "c" })
 //
+//let [<Test>] ``LazyList.head throws on an empty list`` () =
+//    (fun () -> LazyList.empty |> LazyList.head |> ignore) |> shouldFail<System.ArgumentException>
+//
+//let [<Test>] ``LazyList.head returns the head of a lazy list`` () =
+//    Cons(1, fun () -> LazyList.empty) |> LazyList.head |> shouldEqual 1
+//
+//let [<Test>] ``LazyList.tail throws on an empty list`` () =
+//    (fun () -> LazyList.empty |> LazyList.head |> ignore) |> shouldFail<System.ArgumentException>
+//
+//let [<Test>] ``LazyList.tail returns the evaluated tail of a lazy list`` () =
+//    [ "a"; "b"; "c" ] |> LazyList.ofList |> LazyList.tail |> shouldBeSameAsList ["b"; "c"]
+//
 //let [<Test>] ``LazyList.iter is be called exactly once for all values in correct order`` () =
 //    let mutable acc = ""
 //    [ "a"; "b"; "c" ] |> LazyList.ofList |> LazyList.iter (fun s -> acc <- acc + s)
@@ -166,6 +178,12 @@ let [<Test>] ``An empty lazy list is empty`` () =
 //
 //let [<Test>] ``Filtering only even values returns the filtered list`` () =
 //    [ 1; 2; 3; 4; 5 ] |> LazyList.ofList |> LazyList.filter (fun x -> x % 2 = 0) |> shouldBeSameAsList [2; 4]
+//
+//let [<Test>] ``Choosing on an empty list returns an empty list`` () =
+//    LazyList.empty |> LazyList.choose Some |> shouldBeEmpty
+//
+//let [<Test>] ``Choosing filters out None values`` () =
+//    [ Some 1; None; Some 3; Some 4; None ] |> LazyList.ofList |> LazyList.choose id |> shouldBeSameAsList [1; 3; 4]
 //
 //let [<Test>] ``Min throws on an empty list`` () =
 //    (fun () -> LazyList.empty |> LazyList.min |> ignore) |> shouldFail<System.ArgumentException>

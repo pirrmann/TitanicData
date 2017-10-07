@@ -12,6 +12,9 @@ module LazyList =
     let toArray (l: LazyList<'a>) : 'a array = Array.empty
     let toSeq (l: LazyList<'a>) : 'a seq = l :> seq<'a>
 
+    let head (l: LazyList<'a>) : 'a = Unchecked.defaultof<'a>
+    let tail (l: LazyList<'a>) : LazyList<'a> = Nil
+
     let iter (action  : 'a -> unit) (l: LazyList<'a>) : unit = ()
     let item (index: int) (l: LazyList<'a>) : 'a = Unchecked.defaultof<'a>
     let take (n:int) (l: LazyList<'a>) : LazyList<'a> = Nil
@@ -24,6 +27,7 @@ module LazyList =
     let find (predicate: 'a -> bool) (l: LazyList<'a>) : 'a = Unchecked.defaultof<'a>
     let tryFind (predicate: 'a -> bool) (l: LazyList<'a>) : 'a option = None
     let filter (predicate: 'a -> bool) (l: LazyList<'a>) : LazyList<'a> = Nil
+    let choose (chooser: 'a -> 'b option) (l: LazyList<'a>) : LazyList<'b> = Nil
 
     let min (l: LazyList<'a>) : 'a when 'a : comparison = Unchecked.defaultof<'a>
     let max (l: LazyList<'a>) : 'a when 'a : comparison = Unchecked.defaultof<'a>
