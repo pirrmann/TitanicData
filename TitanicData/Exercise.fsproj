@@ -60,9 +60,13 @@
       <Link>FsUnit.fs</Link>
     </Compile>
     <None Include="paket.references" />
+    <Compile Include="Blank.fs" />
     <Compile Include="CsvParser.fs" />
+    <Compile Include="LazyList.fsi" />
+    <Compile Include="LazyList.fs" />
+    <Compile Include="LazyListModule.fs" />
+    <Compile Include="LazyListTests.fs" />
     <Compile Include="Exercise.fs" />
-    <Compile Include="Tests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
