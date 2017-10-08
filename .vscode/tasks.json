@@ -6,9 +6,9 @@
         {
             "taskName": "Build",
             "type": "shell",
-            "command": "${workspaceRoot}/build.sh",
+            "command": "${workspaceRoot}/build.sh BuildApp",
             "windows": {
-                "command": "${workspaceRoot}/build.cmd"
+                "command": "${workspaceRoot}/build.cmd BuildApp"
             },
             "problemMatcher":"$msCompile",
             "group": {
