@@ -1,5 +1,8 @@
+framework: net45
+
 source https://nuget.org/api/v2
 
+nuget FSharp.Core
 nuget FAKE
 nuget NUnit ~> 2.0
 nuget NUnit.Runners ~> 2.0
