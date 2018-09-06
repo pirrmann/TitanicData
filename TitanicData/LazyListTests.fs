@@ -7,18 +7,26 @@ open HomeMadeCollections
 let alwaysTrue _ = true
 let alwaysFalse _ = false
 
-module Expect =
-    let sameAsList (actual: LazyList<'a>) (expected: 'a list) message =
-        let actualAsList = actual |> LazyList.toList
-        Expect.equal actualAsList expected message
+let shouldHaveLength length (actual: LazyList<'a>) =
+  let actualLength = actual |> LazyList.length
+  Expect.equal actualLength length (sprintf "Length should be %d" length)
+
+let shouldEqual expected actual =
+  Expect.equal actual expected "Values should be equal"
+
+let shouldBeSameSequenceAs expected actual =
+  Expect.sequenceEqual actual expected "Sequences should be equal"
+
+let shouldBeSameAsList (expected: 'a list) (actual: LazyList<'a>) =
+  let actualAsList = actual |> LazyList.toList
+  Expect.equal actualAsList expected (sprintf "The values should be the same as te ones from list %A" expected)
 
 [<Tests>]
 let tests =
   testList "All LazyList tests" [
 
     test "An empty lazy list has length 0" {
-      let length = LazyList.empty |> LazyList.length
-      Expect.equal length 0 "Length should be 0"
+      LazyList.empty |> shouldHaveLength 0
     }
 
     test "An empty lazy list is empty" {
@@ -26,84 +34,96 @@ let tests =
       Expect.isTrue isEmpty "The list should be empty"
     }
 
-  ]  
+    test "A lazy list of length 1 has length 1" {
+      Cons(0, fun () -> Nil) |> shouldHaveLength 1
+    }
 
-//let [<Test>] ``A lazy list of length 1 has length 1`` () =
-//    Cons(0, fun () -> Nil) |> LazyList.length |> shouldEqual 1
-//
-//let [<Test>] ``A lazy list of length 1 is not empty`` () =
-//    Cons(0, fun () -> Nil) |> LazyList.isEmpty |> shouldEqual false
-//
-//let [<Test>] ``A lazy list built from an array has the length of the array`` () =
-//    [||] |> LazyList.ofArray |> shouldHaveLength 0
-//    [| 1 |] |> LazyList.ofArray |> shouldHaveLength 1
-//    [| 1; 2 |] |> LazyList.ofArray |> shouldHaveLength 2
-//    [| "a"; "b"; "c" |] |> LazyList.ofArray |> shouldHaveLength 3
-//
-//let [<Test>] ``A lazy list built from a list has the length of the list`` () =
-//    [] |> LazyList.ofList |> shouldHaveLength 0
-//    [ 1 ] |> LazyList.ofList |> shouldHaveLength 1
-//    [ 1; 2 ] |> LazyList.ofList |> shouldHaveLength 2
-//    [ "a"; "b"; "c" ] |> LazyList.ofList |> shouldHaveLength 3
-//
-//let [<Test>] ``A lazy list built from a seq has the length of the seq`` () =
-//    Seq.empty |> LazyList.ofSeq |> shouldHaveLength 0
-//    seq { yield 1 } |> LazyList.ofSeq |> shouldHaveLength 1
-//    seq { yield 1; yield 2 } |> LazyList.ofSeq |> shouldHaveLength 2
-//    seq { yield "a"; yield "b"; yield "c" } |> LazyList.ofSeq |> shouldHaveLength 3
-//
-//let [<Test>] ``An infinite lazy list can be created from an infinite seq`` () =
-//    let infiniteSequence = Seq.unfold (fun () -> Some (1, ())) ()
-//    let infiniteLazyList = infiniteSequence |> LazyList.ofSeq
-//    infiniteLazyList |> LazyList.take 10000 |> shouldHaveLength 10000
-//
-//let [<Test>] ``Converting from an array and back to an array produces an identical array`` () =
-//    let convertAndBack l = l |> LazyList.ofArray |> LazyList.toArray
-//    [||] |> convertAndBack |> shouldEqual [||] 
-//    [| 1 |] |> convertAndBack |> shouldEqual [| 1 |]
-//    [| 1; 2 |] |> convertAndBack |> shouldEqual [| 1; 2 |]
-//    [| "a"; "b"; "c" |] |> convertAndBack |> shouldEqual [| "a"; "b"; "c" |]
-//
-//let [<Test>] ``Converting from a list and back to a list produces an identical list`` () =
-//    let convertAndBack l = l |> LazyList.ofList |> LazyList.toList
-//    [] |> convertAndBack |> shouldEqual []
-//    [ 1 ] |> convertAndBack |> shouldEqual [ 1 ]
-//    [ 1; 2 ] |> convertAndBack |> shouldEqual [ 1; 2 ]
-//    [ "a"; "b"; "c" ] |> convertAndBack |> shouldEqual [ "a"; "b"; "c" ]
-//
-//let [<Test>] ``Converting from a seq and back to a seq produces an identical seq`` () =
-//    let shouldBeSameSequenceAs expected actual =
-//        System.Linq.Enumerable.SequenceEqual(expected, actual) |> shouldEqual true
-//
-//    let convertAndBack l = l |> LazyList.ofSeq |> LazyList.toSeq
-//    Seq.empty |> convertAndBack |> shouldBeSameSequenceAs Seq.empty
-//    seq { yield 1 } |> convertAndBack |> shouldBeSameSequenceAs (seq { yield 1 })
-//    seq { yield 1; yield 2 } |> convertAndBack |> shouldBeSameSequenceAs (seq { yield 1; yield 2 })
-//    seq { yield "a"; yield "b"; yield "c" } |> convertAndBack |> shouldBeSameSequenceAs (seq { yield "a"; yield "b"; yield "c" })
-//
-//let [<Test>] ``LazyList.head throws on an empty list`` () =
-//    (fun () -> LazyList.empty |> LazyList.head |> ignore) |> shouldFail<System.ArgumentException>
-//
-//let [<Test>] ``LazyList.head returns the head of a lazy list`` () =
-//    Cons(1, fun () -> LazyList.empty) |> LazyList.head |> shouldEqual 1
-//
-//let [<Test>] ``LazyList.tail throws on an empty list`` () =
-//    (fun () -> LazyList.empty |> LazyList.head |> ignore) |> shouldFail<System.ArgumentException>
-//
-//let [<Test>] ``LazyList.tail returns the evaluated tail of a lazy list`` () =
-//    [ "a"; "b"; "c" ] |> LazyList.ofList |> LazyList.tail |> shouldBeSameAsList ["b"; "c"]
-//
-//let [<Test>] ``LazyList.iter is be called exactly once for all values in correct order`` () =
-//    let mutable acc = ""
-//    [ "a"; "b"; "c" ] |> LazyList.ofList |> LazyList.iter (fun s -> acc <- acc + s)
-//    acc |> shouldEqual "abc"
-//
-//let [<Test>] ``LazyList.item extracts the value at the given index`` () =
-//    let lazyList = [ "a"; "b"; "c" ] |> LazyList.ofList
-//    lazyList |> LazyList.item 0 |> shouldEqual "a"
-//    lazyList |> LazyList.item 1 |> shouldEqual "b"
-//    lazyList |> LazyList.item 2 |> shouldEqual "c"
-//
+    test "A lazy list of length 1 is not empty" {
+      let isEmpty = Cons(0, fun () -> Nil) |> LazyList.isEmpty
+      Expect.isFalse isEmpty "The list should not be empty"
+    }
+
+    testList "A lazy list built from an array has the length of the array" [
+      test "Empty" { [||] |> LazyList.ofArray |> shouldHaveLength 0 }
+      test "Size 1" { [| 1 |] |> LazyList.ofArray |> shouldHaveLength 1 }
+      test "Size 2" { [| 1; 2 |] |> LazyList.ofArray |> shouldHaveLength 2 }
+      test "Size 3" { [| "a"; "b"; "c" |] |> LazyList.ofArray |> shouldHaveLength 3 }
+    ]
+
+    testList "A lazy list built from a list has the length of the list" [
+      test "Empty" { [] |> LazyList.ofList |> shouldHaveLength 0 }
+      test "Size 1" { [ 1 ] |> LazyList.ofList |> shouldHaveLength 1 }
+      test "Size 2" { [ 1; 2 ] |> LazyList.ofList |> shouldHaveLength 2 }
+      test "Size 3" { [ "a"; "b"; "c" ] |> LazyList.ofList |> shouldHaveLength 3 }
+    ]
+
+    testList "A lazy list built from a seq has the length of the seq" [
+      test "Empty" { Seq.empty |> LazyList.ofSeq |> shouldHaveLength 0 }
+      test "Size 1" { seq { yield 1 } |> LazyList.ofSeq |> shouldHaveLength 1 }
+      test "Size 2" { seq { yield 1; yield 2 } |> LazyList.ofSeq |> shouldHaveLength 2 }
+      test "Size 3" { seq { yield "a"; yield "b"; yield "c" } |> LazyList.ofSeq |> shouldHaveLength 3 }
+    ]
+
+    test "An infinite lazy list can be created from an infinite seq" {
+      let infiniteSequence = Seq.unfold (fun () -> Some (1, ())) ()
+      let infiniteLazyList = infiniteSequence |> LazyList.ofSeq
+      infiniteLazyList |> LazyList.take 10000 |> shouldHaveLength 10000
+    }
+
+    testList "Converting from an array and back to an array produces an identical array" [
+      let convertAndBack l = l |> LazyList.ofArray |> LazyList.toArray
+      yield test "Empty" { [||] |> convertAndBack |> shouldEqual [||] }
+      yield test "Size 1" { [| 1 |] |> convertAndBack |> shouldEqual [| 1 |] }
+      yield test "Size 2" { [| 1; 2 |] |> convertAndBack |> shouldEqual [| 1; 2 |] }
+      yield test "Size 3" { [| "a"; "b"; "c" |] |> convertAndBack |> shouldEqual [| "a"; "b"; "c" |] }
+    ]
+
+    testList "Converting from a list and back to a list produces an identical list" [
+      let convertAndBack l = l |> LazyList.ofList |> LazyList.toList
+      yield test "Empty" { [] |> convertAndBack |> shouldEqual [] }
+      yield test "Size 1" { [ 1 ] |> convertAndBack |> shouldEqual [ 1 ] }
+      yield test "Size 2" { [ 1; 2 ] |> convertAndBack |> shouldEqual [ 1; 2 ] }
+      yield test "Size 3" { [ "a"; "b"; "c" ] |> convertAndBack |> shouldEqual [ "a"; "b"; "c" ] }
+    ]
+
+    testList "Converting from a seq and back to a seq produces an identical seq" [
+      let convertAndBack l = l |> LazyList.ofSeq |> LazyList.toSeq
+      yield test "Empty" { Seq.empty |> convertAndBack |> shouldBeSameSequenceAs Seq.empty }
+      yield test "Size 1" { seq { yield 1 } |> convertAndBack |> shouldBeSameSequenceAs (seq { yield 1 }) }
+      yield test "Size 2" { seq { yield 1; yield 2 } |> convertAndBack |> shouldBeSameSequenceAs (seq { yield 1; yield 2 }) }
+      yield test "Size 3" { seq { yield "a"; yield "b"; yield "c" } |> convertAndBack |> shouldBeSameSequenceAs (seq { yield "a"; yield "b"; yield "c" }) }
+    ]
+
+    test "LazyList.head throws on an empty list" {
+      Expect.throwsT<System.ArgumentException> (fun () -> LazyList.empty |> LazyList.head |> ignore) "It should throw"
+    }
+
+    test "LazyList.head returns the head of a lazy list" {
+      Cons(1, fun () -> LazyList.empty) |> LazyList.head |> shouldEqual 1
+    }
+
+    test "LazyList.tail throws on an empty list" {
+      Expect.throwsT<System.ArgumentException> (fun () -> LazyList.empty |> LazyList.tail |> ignore) "It should throw"
+    }
+
+    test "LazyList.tail returns the evaluated tail of a lazy list" {
+      [ "a"; "b"; "c" ] |> LazyList.ofList |> LazyList.tail |> shouldBeSameAsList ["b"; "c"]
+    }
+
+    test "LazyList.iter is be called exactly once for all values in correct order" {
+      let mutable acc = ""
+      [ "a"; "b"; "c" ] |> LazyList.ofList |> LazyList.iter (fun s -> acc <- acc + s)
+      acc |> shouldEqual "abc"
+    }
+
+    testList "LazyList.item extracts the value at the given index" [
+      let lazyList = [ "a"; "b"; "c" ] |> LazyList.ofList
+      yield test "Index 0" { lazyList |> LazyList.item 0 |> shouldEqual "a" }
+      yield test "Index 1" { lazyList |> LazyList.item 1 |> shouldEqual "b" }
+      yield test "Index 2" { lazyList |> LazyList.item 2 |> shouldEqual "c" }
+    ]
+  ]
+
 //let [<Test>] ``LazyList.item throws for invalid indexes`` () =
 //    let lazyList = [ "a"; "b"; "c" ] |> LazyList.ofList
 //    (fun () -> lazyList |> LazyList.item -1 |> ignore) |> shouldFail<System.IndexOutOfRangeException>
