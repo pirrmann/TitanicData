@@ -6,8 +6,6 @@ If you want to execute part of this file in the REPL, you must first load the fo
 #load "CsvParser.fs"
 #load "LazyList.fs"
 #load "LazyListModule.fs"
-#r "../packages/NUnit/lib/nunit.framework.dll"
-#load "../paket-files/forki/FsUnit/FsUnit.fs"
 *)
 
 open CsvParser
@@ -30,7 +28,7 @@ let Run () =
     let mapPassenger (a: string array) : Passenger = __
 
     // We want to load the list of all the passengers
-    let passengers: LazyList<Passenger> = __ 
+    let passengers: Passenger list = __ 
 
     // Now we can start to answer questions!
 
