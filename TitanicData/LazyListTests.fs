@@ -1,20 +1,32 @@
 ﻿module Tests
 
-open NUnit.Framework
-open FsUnit
+open Expecto
 
 open HomeMadeCollections
 
 let alwaysTrue _ = true
 let alwaysFalse _ = false
-let shouldBeSameAsList (expected: 'a list) (actual: LazyList<'a>) =
-    actual |> LazyList.toList |> shouldEqual expected
 
-let [<Test>] ``An empty lazy list has length 0`` () =
-    LazyList.empty |> LazyList.length |> shouldEqual 0
+module Expect =
+    let sameAsList (actual: LazyList<'a>) (expected: 'a list) message =
+        let actualAsList = actual |> LazyList.toList
+        Expect.equal actualAsList expected message
 
-let [<Test>] ``An empty lazy list is empty`` () =
-    LazyList.empty |> LazyList.isEmpty |> shouldEqual true
+[<Tests>]
+let tests =
+  testList "All LazyList tests" [
+
+    test "An empty lazy list has length 0" {
+      let length = LazyList.empty |> LazyList.length
+      Expect.equal length 0 "Length should be 0"
+    }
+
+    test "An empty lazy list is empty" {
+      let isEmpty = LazyList.empty |> LazyList.isEmpty
+      Expect.isTrue isEmpty "The list should be empty"
+    }
+
+  ]  
 
 //let [<Test>] ``A lazy list of length 1 has length 1`` () =
 //    Cons(0, fun () -> Nil) |> LazyList.length |> shouldEqual 1

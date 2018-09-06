@@ -1,7 +1,7 @@
 This is a starter project to use in an F# coding exercise working with CSV data.
 
-It just embeds FAKE, Paket, and references to NUnit, as well as @sforkmann's lightweight FsUnit.fs file.
+It relies on .NET core and references Expecto as a testing library/runner.
 
 Just clone the repo or download it, and get started coding and testing in F#!
 
-To get started, just run build.cmd or ./build.sh in the folder.
+To get started, just dotnet run in the folder. The executable will run Expecto tests.
