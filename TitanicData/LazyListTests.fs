@@ -129,8 +129,8 @@ let tests =
 
     testList "LazyList.item throws for invalid indexes" [
       let lazyList = [ "a"; "b"; "c" ] |> LazyList.ofList
-      yield test "Index -1" { Expect.throwsT<System.IndexOutOfRangeException> (fun () -> LazyList.item -1 |> ignore) "It should throw" }
-      yield test "Index 3" { Expect.throwsT<System.IndexOutOfRangeException> (fun () -> LazyList.item 3 |> ignore) "It should throw" }
+      yield test "Index -1" { Expect.throwsT<System.IndexOutOfRangeException> (fun () -> lazyList |> LazyList.item -1 |> ignore) "It should throw" }
+      yield test "Index 3" { Expect.throwsT<System.IndexOutOfRangeException> (fun () -> lazyList |> LazyList.item 3 |> ignore) "It should throw" }
     ]
 
     testList "LazyList.length has the same length as the sequence used to build it" [
@@ -143,10 +143,10 @@ let tests =
     testList "LazyList.take takes only the first n elements" [
       let lazyList = [ "a"; "b"; "c" ] |> LazyList.ofList
       yield test "0" { lazyList |> LazyList.take 0 |> shouldBeSameAsList [] }
-      yield test "1" { lazyList |> LazyList.take 0 |> shouldBeSameAsList [ "a" ] }
-      yield test "2" { lazyList |> LazyList.take 0 |> shouldBeSameAsList [ "a"; "b" ] }
-      yield test "3" { lazyList |> LazyList.take 0 |> shouldBeSameAsList [ "a"; "b"; "c" ] }
-      yield test "4" { lazyList |> LazyList.take 0 |> shouldBeSameAsList [ "a"; "b"; "c" ] }
+      yield test "1" { lazyList |> LazyList.take 1 |> shouldBeSameAsList [ "a" ] }
+      yield test "2" { lazyList |> LazyList.take 2 |> shouldBeSameAsList [ "a"; "b" ] }
+      yield test "3" { lazyList |> LazyList.take 3 |> shouldBeSameAsList [ "a"; "b"; "c" ] }
+      yield test "4" { lazyList |> LazyList.take 4 |> shouldBeSameAsList [ "a"; "b"; "c" ] }
     ]
 
     testList "Mapping the identity function on a list produces an identical list" [
@@ -257,8 +257,8 @@ let tests =
     }
 
     testList "Max evaluates to the maximum value in a list" [
-        yield test "Integers" { [ 4; 3; 1; 2; 5 ] |> LazyList.ofList |> LazyList.min |> shouldEqual 5 }
-        yield test "Strings" { [ "ef"; "abcd"; "vwxyz" ] |> LazyList.ofList |> LazyList.min |> shouldEqual "vwxyz" }
+        yield test "Integers" { [ 4; 3; 1; 2; 5 ] |> LazyList.ofList |> LazyList.max |> shouldEqual 5 }
+        yield test "Strings" { [ "ef"; "abcd"; "vwxyz" ] |> LazyList.ofList |> LazyList.max |> shouldEqual "vwxyz" }
     ]
 
     test "MinBy throws on an empty list" {
