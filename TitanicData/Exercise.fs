@@ -14,21 +14,53 @@ open HomeMadeCollections
 // That's not actually what we want
 // The dataset is described here:
 // https://www.kaggle.com/c/titanic/data
-type Passenger = string array
+
+type Gender = | Male | Female
+type PassengerClass = | FirstClass | SecondClass | ThirdClass
+type Passenger = {
+    Name: string
+    Gender: Gender
+    Age: Option<decimal>
+    Fare: decimal
+    Cabin: Option<string>
+    PassengerClass: PassengerClass
+    Survived: bool
+}
+
+let parseDecimal (s: string) =
+    System.Decimal.Parse(s, System.Globalization.CultureInfo.InvariantCulture)
 
 let Run () =
     let file = System.IO.File.ReadAllLines(__SOURCE_DIRECTORY__ + "/../CsvFiles/titanic.csv")
     let data =
-        [|
-            for line in file do
+        [
+            for line in file.[1..] do
             yield parseLineWithRegex line
-        |]
+        ]
 
     // We want to map a line to a Passenger type
-    let mapPassenger (a: string array) : Passenger = __
+    let mapPassenger (a: string array) : Passenger = 
+        {
+            Name = a.[2]
+            Gender = if a.[3] = "male" then Male else Female
+            Age = if a.[4] = "" then None else Some (parseDecimal(a.[4]))
+            Fare = parseDecimal(a.[8])
+            Survived = a.[0] = "1"
+            Cabin = if a.[9] = "" then None else Some (a.[9])
+            PassengerClass =
+                match a.[1] with
+                | "1" -> FirstClass
+                | "2" -> SecondClass
+                | "3" -> ThirdClass
+                | _ -> invalidArg "pclass" "Invalid passenger class"
+        }
 
     // We want to load the list of all the passengers
-    let passengers: Passenger list = __ 
+    let passengers: Passenger list =
+        [
+            for passengerData in data do
+            yield mapPassenger passengerData
+        ]
 
     // Now we can start to answer questions!
 
