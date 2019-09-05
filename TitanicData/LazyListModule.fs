@@ -15,7 +15,7 @@ module LazyList =
     let head (l: LazyList<'a>) : 'a = Unchecked.defaultof<'a>
     let tail (l: LazyList<'a>) : LazyList<'a> = Nil
 
-    let iter (action  : 'a -> unit) (l: LazyList<'a>) : unit = ()
+    let iter (action : 'a -> unit) (l: LazyList<'a>) : unit = ()
     let item (index: int) (l: LazyList<'a>) : 'a = Unchecked.defaultof<'a>
     let take (n:int) (l: LazyList<'a>) : LazyList<'a> = Nil
     let length (l: LazyList<'a>) : int = 0
