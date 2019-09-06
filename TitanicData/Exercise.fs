@@ -47,16 +47,16 @@ let Run () =
     // What is the most expensive fare paid to onboard?
     // Who paid the most expensive fare to onboard?
     // How many of them died/survived?
-    let mostExpensiveFare : float = __
-    let passengersWhoPaidTheMost : LazyList<Passenger> = __
+    let mostExpensiveFare : decimal = __
+    let passengersWhoPaidTheMost : Passenger list = __
     let passengersWhoPaidTheMostAndDiedCount : int = __
     let passengersWhoPaidTheMostAndSurvivedCount : int = __
 
     // What is the least expensive fare paid to onboard?
     // Who paid the least expensive fare to onboard?
     // How many of them survived?
-    let leastExpensiveFare : float = __
-    let passengersWhoPaidTheLeast : LazyList<Passenger> = __
+    let leastExpensiveFare : decimal = __
+    let passengersWhoPaidTheLeast : Passenger list = __
     let passengersWhoPaidTheLeastAndDiedCount : int = __
     let passengersWhoPaidTheLeastAndSurvivedCount : int = __
 
@@ -71,11 +71,11 @@ let Run () =
 
     // What is the average age of passengers?
     // and standard deviation?
-    let averageAge : float = __
-    let standardDeviation : float = __
+    let averageAge : decimal = __
+    let standardDeviation : decimal = __
 
     // Can you compute both the average and the standard deviation in one pass?
-    let (averageAge' : float, standardDeviation' : float) = __
+    let (averageAge' : decimal, standardDeviation' : decimal) = __
 
     if averageAge' <> averageAge then
         failwith "averageAge' should equal averageAge"
@@ -87,7 +87,7 @@ let Run () =
     // What ist the survival rate for each passenger class / sex combination?
     let globalSurvivalRate : float = __
 
-    let survivalRates : LazyList<(int * string) * float> = __
+    let survivalRates : ((int * string) * float) list = __
 
     printfn "All Good!"
 
